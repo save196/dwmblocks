@@ -5,7 +5,7 @@ static const Block blocks[] = {
         {"", "internet",               5,              0},
         {"", "battery",               20,             0},
         {"", "volume",                 0,              10},
-        {"", "disk /dev/elxnoname-vg/root /",  60,             0},
+        {"", "disk / /",       60,             0},
         {"", "cpu",                    10,             0},
         {"", "memory",                 20,             0},
         {"", "clock",                50,             0},

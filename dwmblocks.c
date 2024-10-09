@@ -104,9 +104,9 @@ void getsigcmds(unsigned int signal)
 void setupsignals()
 {
 #ifndef __OpenBSD__
-	    /* initialize all real time signals with dummy handler */
-    for (int i = SIGRTMIN; i <= SIGRTMAX; i++)
-        signal(i, dummysighandler);
+	/* initialize all real time signals with dummy handler */
+	for (int i = SIGRTMIN; i <= SIGRTMAX; i++)
+		signal(i, dummysighandler);
 #endif
 
 	for (unsigned int i = 0; i < LENGTH(blocks); i++) {
@@ -175,7 +175,7 @@ void statusloop()
 /* this signal handler should do nothing */
 void dummysighandler(int signum)
 {
-    return;
+	return;
 }
 #endif
 

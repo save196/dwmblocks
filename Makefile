@@ -1,36 +1,47 @@
 PREFIX  := /usr/local
 CC      := cc
 CFLAGS  := -pedantic -Wall -Wno-deprecated-declarations -Os
-LDFLAGS := -lX11
+LDFLAGS :=
+
+# x11 builds dwmblocks, wayland builds dwlblocks
+MODE = x11
+BIN  = dwmblocks
+LIBS = -lX11
+ifeq ($(MODE),wayland)
+BIN  = dwlblocks
+LIBS =
+override CPPFLAGS += -DNO_X
+endif
 
 # FreeBSD (uncomment)
 #LDFLAGS += -L/usr/local/lib -I/usr/local/include
 # # OpenBSD (uncomment)
 #LDFLAGS += -L/usr/X11R6/lib -I/usr/X11R6/include
 
-all: options dwmblocks
+all: options ${BIN}
 
 options:
 	@echo dwmblocks build options:
+	@echo "MODE    = ${MODE}"
 	@echo "CFLAGS  = ${CFLAGS}"
 	@echo "LDFLAGS = ${LDFLAGS}"
 	@echo "CC      = ${CC}"
 
-dwmblocks: dwmblocks.c blocks.def.h blocks.h
-	${CC} -o dwmblocks dwmblocks.c ${CFLAGS} ${LDFLAGS}
+${BIN}: dwmblocks.c blocks.def.h blocks.h
+	${CC} -o $@ dwmblocks.c ${CPPFLAGS} ${CFLAGS} ${LDFLAGS} ${LIBS}
 
 blocks.h:
 	cp blocks.def.h $@
 
 clean:
-	rm -f *.o *.gch dwmblocks
+	rm -f *.o *.gch dwmblocks dwlblocks
 
-install: dwmblocks
+install: ${BIN}
 	mkdir -p ${DESTDIR}${PREFIX}/bin
-	cp -f dwmblocks ${DESTDIR}${PREFIX}/bin
-	chmod 755 ${DESTDIR}${PREFIX}/bin/dwmblocks
+	cp -f ${BIN} ${DESTDIR}${PREFIX}/bin
+	chmod 755 ${DESTDIR}${PREFIX}/bin/${BIN}
 
 uninstall:
-	rm -f ${DESTDIR}${PREFIX}/bin/dwmblocks
+	rm -f ${DESTDIR}${PREFIX}/bin/${BIN}
 
 .PHONY: all options clean install uninstall
